@@ -1,13 +1,18 @@
+<!-- weather_app/templates/weather_app/weather_home.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap" rel="stylesheet">
+    <title>Weather Update</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Kode Mono', monospace;
+            background-color: #87CEEB;
             margin: 0;
             padding: 20px;
             text-align: center;
@@ -15,58 +20,176 @@
 
         h1 {
             color: #333;
+            margin-bottom: 20px;
+        }
+
+        .weather-info {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
         }
 
         p {
-            color: #555;
+            color: #333;
             font-size: 18px;
             margin: 10px 0;
         }
 
         form {
-            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
         }
 
         label {
-            font-size: 16px;
-            margin-right: 10px;
+            font-size: 20px;
+            margin-bottom: 10px;
         }
 
         input {
             padding: 8px;
             font-size: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
         button {
-            padding: 8px 15px;
-            font-size: 16px;
+            padding: 10px 20px;
+            font-size: 18px;
             background-color: #4CAF50;
             color: #fff;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
         }
 
         button:hover {
             background-color: #45a049;
         }
+
+        .error-message {
+            color: #ff0000;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: left;
+            background-color: #f2f2f2;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #f5ebeb;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+}
+
+input {
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    width: 90%;
+}
+
+button {
+    padding: 12px 20px;
+    font-size: 18px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+    width: 30%;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.error-message {
+    color: #ff0000;
+    margin-top: 20px;
+}
+
     </style>
 </head>
 <body>
-    <h1>Weather Information for {{ city }}</h1>
-
-    {% if weather_data %}
-        <p>Temperature: {{ weather_data.main.temp }}°C</p>
-        <p>Weather: {{ weather_data.weather.0.description }}</p>
-        <p>Humidity: {{ weather_data.main.humidity }}%</p>
-        <p>Wind Speed: {{ weather_data.wind.speed }} m/s</p>
-    {% else %}
-        <p>Unable to fetch weather information.</p>
-    {% endif %}
-
+    <h1 > Weather Update </h1>
     <form action="{% url 'weather_home' %}" method="get">
-        <label for="city">Enter City:</label>
-        <input type="text" id="city" name="city" required>
+        <input type="text" id="city" name="city" required placeholder="Enter City">
         <button type="submit">Get Weather</button>
     </form>
+    <h2>Discover the Weather in {{ city }}</h2>
+
+    <div class="weather-info">
+        {% if current_weather %}
+            <p>Current Temperature: {{ current_weather.main.temp }}°C</p>
+            <p>Current Weather: {{ current_weather.weather.0.description }}</p>
+            <p>Humidity: {{ current_weather.main.humidity }}%</p>
+            <p>Wind Speed: {{ current_weather.wind.speed }} m/s</p>
+        {% else %}
+            <p class="error-message">Unable to fetch current weather information. Please try again.</p>
+        {% endif %}
+    </div>
+
+    <table class="forecast">
+        <caption><h3>5-Day Forecast</h3></caption>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temperature (°C)</th>
+                <th>Weather</th>
+                <th>Humidity (%)</th>
+                <th>Wind Speed (m/s)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for forecast in forecast_data %}
+                <tr>
+                    <td>{{ forecast.dt_txt }}</td>
+                    <td>{{ forecast.main.temp }}</td>
+                    <td>{{ forecast.weather.0.description }}</td>
+                    <td>{{ forecast.main.humidity }}</td>
+                    <td>{{ forecast.wind.speed }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <footer class="py-2">
+        <div style="padding-top: 10px; " class="small text-center text-muted">Weather Update &copy; 2024 || Developed By Md. Fahim
+            Bhuiyan
+        </div>
+    </footer>
 </body>
 </html>
