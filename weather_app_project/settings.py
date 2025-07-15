@@ -7,7 +7,7 @@ SECRET_KEY = 'django-insecure--1cscc9)p9du4a#w$4o=a_k^s2e(1g@*0$1e=&n#2lfk5bc92(
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['weather-app-project-n4bf.onrender.com']
 
 
 # Application definition
